@@ -142,7 +142,7 @@
 #       foreign_key: group_id
 
 
-- explore: groups
+# - explore: groups
 
 # - explore: incoming_domains
 # 
