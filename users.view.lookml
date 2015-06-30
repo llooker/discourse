@@ -6,10 +6,28 @@
     type: int
     sql: ${TABLE}.id
 
-  - dimension: active
+  - dimension: is_active
     type: yesno
     sql: ${TABLE}.active
-
+  
+  - dimension: is_looker
+    type: yesno
+    sql: ${email} LIKE '%@looker.com'
+    
+  - dimension: domain
+    description: Use this to show which COMPANY someone comes from, gmail etc included
+    sql: SPLIT_PART(SPLIT_PART(${email}, '@', 2), '.', 1)
+   
+    
+  - dimension: domain_with_unregistered_bucket
+    description: Use this to show which COMPANY someone comes from, gmail etc excluded
+    sql: |
+      CASE
+        WHEN ${domain} IN ('gmail', 'live', 'googlemail', 'hotmail')
+        THEN 'Not Registered By Company'
+        ELSE ${domain}
+      END
+      
 #   - dimension: admin
 #     type: yesno
 #     sql: ${TABLE}.admin
@@ -96,8 +114,8 @@
 #     type: int
 #     sql: ${TABLE}.flag_level
 # 
-#   - dimension: ip_address
-#     sql: ${TABLE}.ip_address
+  - dimension: ip_address
+    sql: ${TABLE}.ip_address
 # 
 #   - dimension_group: last_emailed
 #     type: time
@@ -202,6 +220,10 @@
   - measure: count
     type: count
     drill_fields: detail*
+    
+  - measure: running_total
+    type: running_total
+    sql: ${count}
 
 
   # ----- Sets of fields for drilling ------

@@ -6,12 +6,12 @@
 
   - dimension: topic_id
     type: int
-    # hidden: true
+    hidden: true
     sql: ${TABLE}.topic_id
 
   - dimension: user_id
     type: int
-    # hidden: true
+    hidden: true
     sql: ${TABLE}.user_id
 
   - dimension_group: viewed
@@ -24,3 +24,10 @@
     type: count
     drill_fields: [users.name, users.username, users.id, topics.id]
 
+  - measure: unique_ip_count
+    type: count_distinct
+    sql: ${ip_address}
+  
+  - measure: running_total_unique_ips
+    type: running_total
+    sql: ${unique_ip_count}
